@@ -58,7 +58,7 @@ class Db{
     public function insert($data){
         $str = "INSERT INTO " . $this->table . " (";
         foreach($data as $key=>$value){
-            $str .= $key . ",";
+            $str .= "`" . $key . "`,";
         }
         $str .= ")";
         $str = preg_replace('/,([^,]*)$/', '\1', $str);
