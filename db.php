@@ -55,6 +55,10 @@ class Db{
         $this->query .= " ORDER BY " . $condition . "\n";
         return $this;
     }
+    public function groupBy($condition){
+      $this->query .= " GROUP BY " . $condition . "\n";
+      return $this;
+    }
     public function insert($data){
         $str = "INSERT INTO " . $this->table . " (";
         foreach($data as $key=>$value){
