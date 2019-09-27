@@ -59,6 +59,10 @@ class Db{
       $this->query .= " GROUP BY " . $condition . "\n";
       return $this;
     }
+    public function join($table,$condition1,$conditional,$condition2){
+      $this->query .= " JOIN " . $table . " ON " . $condition1 . " " . $conditional . " " . $condition2 . "\n";
+      return $this;
+    }
     public function insert($data){
         $str = "INSERT INTO " . $this->table . " (";
         foreach($data as $key=>$value){
