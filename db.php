@@ -30,6 +30,37 @@ class Db{
         }
         return true;
     }
+    public function createDatabase($dbName){
+      $this->query = "CREATE database " . $dbName;
+      return $this;
+    }
+    public function createTable($tableArr){
+      if(!isset($tableArr['name']) || !isset($tableArr['columns'])){
+        throw new \Exception('Malformed Input Array');
+      }
+      $this->query = "create table " . $tableArr['name'] . "(\n";
+      foreach($tableArr['columns'] as $col=>$options){
+        $this->query .= $col . " ";
+        for($i = 0; $i < count($options); $i++){
+          if($i == (count($options) - 1)){
+            $this->query .= $options[$i] . ",\n";
+          }else{
+            $this->query .= $options[$i] . " ";
+          }
+        }
+      }
+      $this->query .= "PRIMARY KEY (" . $tableArr['primaryKey'] . ")\n";
+      $this->query .= ");";
+      return $this;
+    }
+    public function drop($name,$table = true){
+      if($table){
+        $this->query = "drop table " . $name;
+      }else{
+        $this->query = "drop database " . $name;
+      }
+      return $this;
+    }
     public function select($select){
         $this->select = "SELECT " . $select . " FROM ";
         $this->query .= "SELECT " . $select . " FROM " . $this->table . "\n";
@@ -61,6 +92,10 @@ class Db{
     }
     public function join($table,$condition1,$conditional,$condition2){
       $this->query .= " JOIN " . $table . " ON " . $condition1 . " " . $conditional . " " . $condition2 . "\n";
+      return $this;
+    }
+    public function delete(){
+      $this->query .= "DELETE FROM  " . $this->table . "\n";
       return $this;
     }
     public function insert($data){
