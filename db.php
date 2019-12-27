@@ -61,6 +61,10 @@ class Db{
       }
       return $this;
     }
+    public function truncate(){
+      $this->query = "truncate table " . $this->table;
+      return $this;
+    }
     public function select($select){
         $this->select = "SELECT " . $select . " FROM ";
         $this->query .= "SELECT " . $select . " FROM " . $this->table . "\n";
