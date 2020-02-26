@@ -99,7 +99,7 @@ class Db{
       return $this;
     }
     public function having($where,$conditional,$condition){
-      $this->query .= " HAVING " $where . " " . $conditional . " " . $condition . "";
+      $this->query .= " HAVING " . $where . " " . $conditional . " " . $condition . "";
       return $this;
     }
     public function delete(){
