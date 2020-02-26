@@ -98,6 +98,10 @@ class Db{
       $this->query .= " JOIN " . $table . " ON " . $condition1 . " " . $conditional . " " . $condition2 . "\n";
       return $this;
     }
+    public function having($where,$conditional,$condition){
+      $this->query .= " HAVING " $where . " " . $conditional . " " . $condition . "";
+      return $this;
+    }
     public function delete(){
       $this->query .= "DELETE FROM  " . $this->table . "\n";
       return $this;
