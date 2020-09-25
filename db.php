@@ -170,7 +170,7 @@ class Db{
       $data = '';
       $this->query = 'SELECT uuid() as uuid';
       $results = $this->get();
-      while($results = mysqli_fetch_assoc($results)){
+      while($row = mysqli_fetch_assoc($results)){
         $data = $row['uuid'];
       }
       return $data;
