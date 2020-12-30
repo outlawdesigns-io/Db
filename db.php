@@ -150,6 +150,10 @@ class Db{
             $exceptionStr = mysqli_error($this->link);
             throw new Exception($exceptionStr);
         }
+        if(!mysqli_set_charset($this->link,"utf8mb4")){
+            $exceptionStr = mysqli_error($this->link);
+            throw new Exception($exceptionStr);
+        }
         $sql = $this->query;
         $results = mysqli_query($this->link,$sql);
         if (!$results){
