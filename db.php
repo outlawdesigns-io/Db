@@ -28,6 +28,10 @@ class Db{
             $exceptionStr = "Connection Failed: " . mysqli_connect_error();
             throw new Exception($exceptionStr);
         }
+        if(!mysqli_set_charset($this->link,"utf8mb4")){
+            $exceptionStr = mysqli_error($this->link);
+            throw new Exception($exceptionStr);
+        }
         return true;
     }
     public function createDatabase($dbName){
@@ -147,10 +151,6 @@ class Db{
     }
     public function get($structure = "object"){
         if(!$this->connect()){
-            $exceptionStr = mysqli_error($this->link);
-            throw new Exception($exceptionStr);
-        }
-        if(!mysqli_set_charset($this->link,"utf8mb4")){
             $exceptionStr = mysqli_error($this->link);
             throw new Exception($exceptionStr);
         }
