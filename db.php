@@ -27,7 +27,7 @@ class Db{
       $this->query = '';
       return $this;
     }
-    protected _loadEnvSettings(){
+    protected function _loadEnvSettings(){
       if(!$this->_host = getenv('MYSQL_HOST')){
         throw new Exception('Unable to acces Environment variable: MYSQL_HOST');
       }
