@@ -42,7 +42,7 @@ class Db{
       return $this;
     }
     public function connect(){
-      $this->link = mysqli_connect(HOST,USER,PASSWORD,$this->database);
+      $this->link = mysqli_connect($this->_host,$this->_user,$this->_password,$this->database);
       if (!$this->link) {
         $exceptionStr = "Connection Failed: " . mysqli_connect_error();
         throw new Exception($exceptionStr);
