@@ -27,15 +27,7 @@ class Db{
       $this->query = '';
       return $this;
     }
-    public function connect(){
-      $this->link = mysqli_connect($this->_host,$this->_user,$this->_password,$this->database);
-      if (!$this->link) {
-        $exceptionStr = "Connection Failed: " . mysqli_connect_error();
-        throw new Exception($exceptionStr);
-      }
-      return true;
-    }
-    protected function _loadEnvSettings(){
+    protected _loadEnvSettings(){
       if(!$this->_host = getenv('MYSQL_HOST')){
         throw new Exception('Unable to acces Environment variable: MYSQL_HOST');
       }
@@ -48,6 +40,18 @@ class Db{
         //throw new Exception('Unable to acces Environment variable: MYSQL_PASSWORD');
       }
       return $this;
+    }
+    public function connect(){
+      $this->link = mysqli_connect(HOST,USER,PASSWORD,$this->database);
+      if (!$this->link) {
+        $exceptionStr = "Connection Failed: " . mysqli_connect_error();
+        throw new Exception($exceptionStr);
+      }
+      if(!mysqli_set_charset($this->link,"utf8mb4")){
+        $exceptionStr = mysqli_error($this->link);
+        throw new Exception($exceptionStr);
+      }
+      return true;
     }
     public function createDatabase($dbName){
       $this->query = "CREATE database " . $dbName;
@@ -184,5 +188,14 @@ class Db{
         }
       }
       //return $this;
+    }
+    public function uuid(){
+      $data = '';
+      $this->query = 'SELECT uuid() as uuid';
+      $results = $this->get();
+      while($row = mysqli_fetch_assoc($results)){
+        $data = $row['uuid'];
+      }
+      return $data;
     }
 }
