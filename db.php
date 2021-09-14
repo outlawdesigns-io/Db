@@ -1,34 +1,53 @@
 <?php
-require_once __DIR__ . '/credentials.php';
+
 class Db{
 
-    public $query;
-    public $select;
-    public $table;
-    public $where;
-    public $and;
-    public $or;
-    public $like;
-    public $link;
-    public $between;
-    public $data = array();
-    public $database;
+  protected $_host;
+  protected $_user;
+  protected $_password;
 
-    public function __constructor(){
-        $this->query = "";
-    }
+  public $query;
+  public $select;
+  public $table;
+  public $where;
+  public $and;
+  public $or;
+  public $like;
+  public $link;
+  public $between;
+  public $data = array();
+  public $database;
+
+  public function __construct(){
+    $this->_loadEnvSettings();
+    $this->query = "";
+  }
     public function database($database){
-        $this->database = $database;
-        $this->query = '';
-        return $this;
+      $this->database = $database;
+      $this->query = '';
+      return $this;
     }
     public function connect(){
-        $this->link = mysqli_connect(HOST,USER,PASSWORD,$this->database);
-        if (!$this->link) {
-            $exceptionStr = "Connection Failed: " . mysqli_connect_error();
-            throw new Exception($exceptionStr);
-        }
-        return true;
+      $this->link = mysqli_connect($this->_host,$this->_user,$this->_password,$this->database);
+      if (!$this->link) {
+        $exceptionStr = "Connection Failed: " . mysqli_connect_error();
+        throw new Exception($exceptionStr);
+      }
+      return true;
+    }
+    protected function _loadEnvSettings(){
+      if(!$this->_host = getenv('MYSQL_HOST')){
+        throw new Exception('Unable to acces Environment variable: MYSQL_HOST');
+      }
+      if(!$this->_user = getenv('MYSQL_USER')){
+        throw new Exception('Unable to acces Environment variable: MYSQL_USER');
+      }
+      if(!$this->_password = getenv('MYSQL_PASSWORD')){
+        $this->_password = "";
+        //don't throw an exception here in case password is actually empty
+        //throw new Exception('Unable to acces Environment variable: MYSQL_PASSWORD');
+      }
+      return $this;
     }
     public function createDatabase($dbName){
       $this->query = "CREATE database " . $dbName;
@@ -107,63 +126,63 @@ class Db{
       return $this;
     }
     public function insert($data){
-        $str = "INSERT INTO " . $this->table . " (";
-        foreach($data as $key=>$value){
-            $str .= "`" . $key . "`,";
-        }
-        $str .= ")";
-        $str = preg_replace('/,([^,]*)$/', '\1', $str);
-        $str .= " VALUES (";
-        foreach($data as $key=>$value){
-            $str .= "'" . $value . "',";
-        }
-        $str .= ")";
-        $str = preg_replace('/,([^,]*)$/', '\1', $str);
-        $this->query = $str;
-        return $this;
+      $str = "INSERT INTO " . $this->table . " (";
+      foreach($data as $key=>$value){
+        $str .= "`" . $key . "`,";
+      }
+      $str .= ")";
+      $str = preg_replace('/,([^,]*)$/', '\1', $str);
+      $str .= " VALUES (";
+      foreach($data as $key=>$value){
+        $str .= "'" . $value . "',";
+      }
+      $str .= ")";
+      $str = preg_replace('/,([^,]*)$/', '\1', $str);
+      $this->query = $str;
+      return $this;
     }
     public function update($data){
-        $colCount = count($data);
-        $i = 0;
-        $str = "UPDATE " . $this->table . " SET ";
-        foreach($data as $key=>$value){
-            if(++$i == $colCount){
-                $str .= $key . " = '" . $value . "'";
-            }else{
-                $str .= $key . " = '" . $value . "' ,";
-            }
+      $colCount = count($data);
+      $i = 0;
+      $str = "UPDATE " . $this->table . " SET ";
+      foreach($data as $key=>$value){
+        if(++$i == $colCount){
+          $str .= $key . " = '" . $value . "'";
+        }else{
+          $str .= $key . " = '" . $value . "' ,";
         }
-        $this->query = $str;
-        return $this;
+      }
+      $this->query = $str;
+      return $this;
     }
     public function put(){
-        $this->connect();
-        $sql = $this->query;
-        if (!mysqli_query($this->link,$sql)){
-            $exceptionStr = "Query Failed: " . mysqli_error($this->link);
-            throw new Exception($exceptionStr);
-        }
-        return true;
+      $this->connect();
+      $sql = $this->query;
+      if (!mysqli_query($this->link,$sql)){
+        $exceptionStr = "Query Failed: " . mysqli_error($this->link);
+        throw new Exception($exceptionStr);
+      }
+      return true;
     }
     public function get($structure = "object"){
-        if(!$this->connect()){
-            $exceptionStr = mysqli_error($this->link);
-            throw new Exception($exceptionStr);
+      if(!$this->connect()){
+        $exceptionStr = mysqli_error($this->link);
+        throw new Exception($exceptionStr);
+      }
+      $sql = $this->query;
+      $results = mysqli_query($this->link,$sql);
+      if (!$results){
+        throw new Exception(mysqli_error($this->link));
+      }
+      else{
+        switch ($structure){
+          case "object":
+            return $results;
+          break;
+          default:
+            return $results;
         }
-        $sql = $this->query;
-        $results = mysqli_query($this->link,$sql);
-        if (!$results){
-            throw new Exception(mysqli_error($this->link));
-        }
-        else{
-            switch ($structure){
-                case "object":
-                    return $results;
-                    break;
-                default:
-                    return $results;
-            }
-        }
-        //return $this;
+      }
+      //return $this;
     }
 }
