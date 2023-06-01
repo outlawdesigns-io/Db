@@ -140,11 +140,11 @@ class Db{
       $this->query .= " RIGHT JOIN " . $table . " ON " . $condition1 . " " . $conditional . " " . $condition2 . "\n";
       return $this;
     }
-    public function innerJoin(){
+    public function innerJoin($table,$condition1,$conditional,$condition2){
       $this->query .= " INNER JOIN " . $table . " ON " . $condition1 . " " . $conditional . " " . $condition2 . "\n";
       return $this;
     }
-    public function crossJoin(){
+    public function crossJoin($table,$condition1,$conditional,$condition2){
       $this->query .= " CROSS JOIN " . $table . " ON " . $condition1 . " " . $conditional . " " . $condition2 . "\n";
       return $this;
     }
