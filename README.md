@@ -1,3 +1,4 @@
+
 # Db
 
 Db (database) is a utility class that is intended to facilitate communications with a MySQL server.
@@ -64,6 +65,30 @@ Truncate the selected table.
 $db->database('MyDb')->table('Test')->truncate()->put();
 ```
 
+### addColumn($column:string, $dataType:string)
+
+Add a column to the selected table.
+
+```
+$db->database('MyDb')->table('Test')->addColumn("user_name","varchar(150)")->put();
+```
+
+### modifyColumn($column:string, $dataType:string)
+
+Change the datatype of a column on the selected table.
+
+```
+$db->database('MyDb')->table('Test')->modifyColumn("user_name","varchar(250)")->put();
+```
+
+### dropColumn($column:string)
+
+Drop a column from the selected table
+
+```
+$db->database('MyDb')->table('Test')->dropColumn("user_name")->put();
+```
+
 ### select($select:string)
 
 Set the fields you wish to select with your query.
@@ -72,7 +97,7 @@ Set the fields you wish to select with your query.
 
 Set the table you wish to query against.
 
-### where($where,$conditional,$condition)
+### where($where, $conditional, $condition)
 
 Add a WHERE clause to your query.
 
@@ -112,11 +137,31 @@ Add a GROUP BY clause to your query.
 $results = $db->database('MyDb')->table('Test')->select('UID')->where('modelId','>=',2)->groupBy('ipAddress')->get();
 ```
 
-### join($table:string,$condition1:string,$conditional:string,$condition2:string)
+### leftJoin($table:string, $condition1:string, $conditional:string, $condition2:string)
 
-Add a basic LEFT OUTER JOIN to your query. This can be repeated as many times as desired.
+Add a basic `LEFT OUTER JOIN` to your query. This can be repeated as many times as desired.
 
-### having($where:string,$conditional:string,$condition:string)
+```
+$results = $db->database("LOE")->table("PlayedSong ps")->select("s.title,ps.playDate")->join("Song s","s.UID","=","ps.songId")->get();
+```
+
+### rightJoin($table:string, $condition1:string, $conditional:string, $condition2:string)
+
+Add a basic `RIGHT OUTER JOIN` to your query. This can be repeated as many times as desired.
+
+### innerJoin($table:string, $condition1:string, $conditional:string, $condition2:string)
+
+Add a basic `INNER JOIN` to your query. This can be repeated as many times as desired.
+
+### crossJoin($table:string, $condition1:string, $conditional:string, $condition2:string)
+
+Add a basic `CROSS JOIN` to your query. This can be repeated as many times as desired.
+
+### join($table:string, $condition1:string, $conditional:string, $condition2:string)
+
+Alias to `leftJoin()`
+
+### having($where:string, $conditional:string, $condition:string)
 
 Add a HAVING clause to your query. This should only be used in conjunction with groupBy()
 

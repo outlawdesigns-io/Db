@@ -2,26 +2,26 @@
 
 class Db{
 
-  protected $_host;
-  protected $_user;
-  protected $_password;
+    protected $_host;
+    protected $_user;
+    protected $_password;
 
-  public $query;
-  public $select;
-  public $table;
-  public $where;
-  public $and;
-  public $or;
-  public $like;
-  public $link;
-  public $between;
-  public $data = array();
-  public $database;
+    public $query;
+    public $select;
+    public $table;
+    public $where;
+    public $and;
+    public $or;
+    public $like;
+    public $link;
+    public $between;
+    public $data = array();
+    public $database;
 
-  public function __construct(){
-    $this->_loadEnvSettings();
-    $this->query = "";
-  }
+    public function __construct(){
+      $this->_loadEnvSettings();
+      $this->query = "";
+    }
     public function database($database){
       $this->database = $database;
       $this->query = '';
@@ -76,6 +76,21 @@ class Db{
       $this->query .= ");";
       return $this;
     }
+    public function addColumn($column,$dataType){
+      $this->query = "alter table " . $this->table . "\n";
+      $this->query .= "ADD " . $column . " " . $dataType . ";";
+      return $this;
+    }
+    public function dropColumn($column){
+      $this->query = "alter table " . $this->table . "\n";
+      $this->query .= "drop column " . $column . ";";
+      return $this;
+    }
+    public function modifyColumn($column,$dataType){
+      $this->query = "alter table " . $this->table . "\n";
+      $this->query .= "modify column " . $column . " " . $dataType . ";";
+      return $this;
+    }
     public function drop($name,$table = true){
       if($table){
         $this->query = "drop table " . $name;
@@ -117,9 +132,24 @@ class Db{
       $this->query .= " GROUP BY " . $condition . "\n";
       return $this;
     }
-    public function join($table,$condition1,$conditional,$condition2){
-      $this->query .= " JOIN " . $table . " ON " . $condition1 . " " . $conditional . " " . $condition2 . "\n";
+    public function leftJoin($table,$condition1,$conditional,$condition2){
+      $this->query .= " LEFT JOIN " . $table . " ON " . $condition1 . " " . $conditional . " " . $condition2 . "\n";
       return $this;
+    }
+    public function rightJoin($table,$condition1,$conditional,$condition2){
+      $this->query .= " RIGHT JOIN " . $table . " ON " . $condition1 . " " . $conditional . " " . $condition2 . "\n";
+      return $this;
+    }
+    public function innerJoin(){
+      $this->query .= " INNER JOIN " . $table . " ON " . $condition1 . " " . $conditional . " " . $condition2 . "\n";
+      return $this;
+    }
+    public function crossJoin(){
+      $this->query .= " CROSS JOIN " . $table . " ON " . $condition1 . " " . $conditional . " " . $condition2 . "\n";
+      return $this;
+    }
+    public function join($table,$condition1,$conditional,$condition2){
+      return $this->leftJoin($table,$condition1,$conditional,$condition2);
     }
     public function having($where,$conditional,$condition){
       $this->query .= " HAVING " . $where . " " . $conditional . " " . $condition . "";
